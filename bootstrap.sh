@@ -3,7 +3,7 @@
 # programming env: these switches turn some bugs into errors
 # set -o errexit -o pipefail -o noclobber -o nounset
 
-# Version: 2.2
+# Version: 3.1
 
 # to be run as root, probably as a user-script just after a server is installed
 

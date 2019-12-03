@@ -3,9 +3,16 @@
 export DEBIAN_FRONTEND=noninteractive
 
 echo 'Installing MySQL / MariaDB Server'
-# lets check if mariadb-server exists
-sql_server=mariadb-server
-if ! apt-cache show mariadb-server &> /dev/null ; then sql_server=mysql-server ; fi
+
+sql_server=mysql-server
+
+# https://dev.mysql.com/doc/mysql-apt-repo-quick-guide/en/
+apt-key adv --keyserver pgp.mit.edu --recv-keys 5072E1F5
+
+distro=$(awk -F= '/^ID=/{print $2}' /etc/os-release)
+codename=`lsb_release -c -s`
+echo "deb http://repo.mysql.com/apt/$distro/ $codename mysql-8.0" > /etc/apt/sources.list.d/mysql.list
+apt-get update
 
 apt-get install ${sql_server} -qq &> /dev/null
 
