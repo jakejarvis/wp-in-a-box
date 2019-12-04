@@ -39,11 +39,11 @@ if ! grep -qw $BASE_NAME ${HOME}/.envrc ; then
     echo "export BASE_NAME=$BASE_NAME" >> ${HOME}/.envrc
 fi
 
-EMAIL=root@localhost
+EMAIL=jake@jarv.is
 if ! grep -qw $EMAIL ${HOME}/.envrc ; then
     echo "export EMAIL=$EMAIL" >> ${HOME}/.envrc
 fi
-NAME='root'
+NAME='jake'
 if ! grep -qw "$NAME" ${HOME}/.envrc ; then
     echo "export NAME='$NAME'" >> ${HOME}/.envrc
 fi
