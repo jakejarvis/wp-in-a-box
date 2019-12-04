@@ -22,7 +22,7 @@ if [ -z "$web_developer_username" ]; then
 fi
 
 if [ -z "$PHP_MAX_CHILDREN" ]; then
-    # let's be safe with a minmal value
+    # let's be safe with a minimal value
     sys_memory=$(free -m | grep -oP '\d+' | head -n 1)
     if (($sys_memory <= 600)) ; then
         PHP_MAX_CHILDREN=4
@@ -49,31 +49,36 @@ if [ -z "$PHP_MAX_CHILDREN" ]; then
 fi
 
 if [ -z "$PHP_MEM_LIMIT" ]; then
-    # let's be safe with a minmal value
+    # let's be safe with a minimal value
     PHP_MEM_LIMIT=256
 fi
 
 # php${php_version}-mysqlnd package is not found in Ubuntu
 
 codename=`lsb_release -c -s`
-case "$codename" in
-    "buster")
-        php_version=7.3
-        ;;
-    "bionic")
-        php_version=7.2
-        ;;
-    "stretch")
-        php_version=7.0
-        ;;
-    "xenial")
-        php_version=7.0
-        ;;
-    *)
-        echo 'Error: Could not figure out the distribution codename to install PHP. Exiting now!'
-        exit 1
-        ;;
-esac
+#case "$codename" in
+#    "buster")
+#        php_version=7.3
+#        ;;
+#    "bionic")
+#        php_version=7.2
+#        ;;
+#    "stretch")
+#        php_version=7.0
+#        ;;
+#    "xenial")
+#        php_version=7.0
+#        ;;
+#    *)
+#        echo 'Error: Could not figure out the distribution codename to install PHP. Exiting now!'
+#        exit 1
+#        ;;
+#esac
+
+# CUSTOM: install PHP 7.4 on bionic
+add-apt-repository -y ppa:ondrej/php
+apt-get -qq update
+php_version=7.4
 
 if ! grep -qw "$php_version" /root/.envrc &> /dev/null ; then
     echo "export php_version=$php_version" >> /root/.envrc
@@ -94,18 +99,14 @@ PHP_PACKAGES="php${php_version}-fpm php${php_version}-mysql php${php_version}-gd
 
 if [ "$php_version" = "7.0" ] ; then
     PHP_PACKAGES="$PHP_PACKAGES php${php_version}-mcrypt"
-fi
-
-if [ "$php_version" = "7.1" ] ; then
+elif [ "$php_version" = "7.1" ] ; then
     PHP_PACKAGES="$PHP_PACKAGES php${php_version}-mcrypt"
-fi
-
-if [ "$php_version" = "7.2" ] ; then
+else
     # todo: https://stackoverflow.com/questions/48275494/issue-in-installing-php7-2-mcrypt
     echo
     echo Note on mcrypt
     echo --------------
-    echo mycrypt is removed in PHP 7.2
+    echo mycrypt was removed in PHP 7.2
     echo Please check if any plugins or theme still use mcrypt by running...
     echo 'find ~/wproot/wp-content/ -type f -name "*.php" -exec grep -inr mcrypt {} \;'
     echo
